@@ -1,9 +1,5 @@
 # project inside folder
-convnext_xxlarge/
-images/
-video/
-video_classification/
-models/
+results/
 
 
 # Ignore models 

@@ -18,7 +18,7 @@ class TextDetector(object):
 
         sess_options = rt.SessionOptions()
         sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
-        provider = ['CUDAExecutionProvider']
+        provider = ['CPUExecutionProvider']
 
         # Initialise onnxruntime
         if detector_type == 'eng':

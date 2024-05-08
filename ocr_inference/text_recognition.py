@@ -19,7 +19,7 @@ class TextRecognizer(object):
             sess_options = rt.SessionOptions()
             sess_options.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
             # This ORT build has ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'] enabled.
-            provider = ['CUDAExecutionProvider']
+            provider = ['CPUExecutionProvider']
 
             if self.language == 'eng':
                 with open('ocr_inference/dictionaries/dict_eng.txt', 'r', encoding='utf8') as fr:
@@ -88,14 +88,13 @@ class TextRecognizer(object):
         )
         return image
 
-    def __call__(self, img, debug=True):
+    def __call__(self, img, debug=False):
         if self.framework == 'paddle':
             # 1) Preprocess Text Crop
             # Scale image, Crop height is fixed.
             # Crop width should be proportional to height and divisible by 12
             # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             h, w, _ = img.shape
-            new_height = 40
             new_width = int(w * (new_height / h))
             img = cv2.resize(img, (new_width, new_height), cv2.INTER_LINEAR)
 
@@ -112,7 +111,7 @@ class TextRecognizer(object):
             # Filter empty ad duplicated letters
             # accepted = [letter_indices != 0]
             accepted = []
-            last = 0
+            last = -1
             for indx, letter_index in enumerate(letter_indices):
                 if letter_index != 0 and letter_index != last:
                     accepted.append(indx)

@@ -9,11 +9,11 @@ import time
 # Press the green button in the gutter to run the script.
 class TextPredictor(object):
     def __init__(self, det_framework='paddle', rec_framework='paddle', det_lang='eng', rec_lang='eng'):
-        assert det_framework in ['paddle', 'tesseract', 'easyocr'], \
-            "Currently supported text detection frameworks are 'paddle', 'tesseract' and 'easyocr"
-        assert rec_framework in ['paddle', 'tesseract', 'easyocr'], \
-            "Currently supported text recognition frameworks are 'paddle' and 'tesseract'"
-        assert rec_lang in ['eng', 'rus'], "Currently supported languages are 'eng' and 'rus'"
+        assert det_framework in ['paddle'], \
+            "Currently supported text detection frameworks are 'paddle'"
+        assert rec_framework in ['paddle'], \
+            "Currently supported text recognition frameworks are 'paddle'"
+        assert rec_lang in ['eng'], "Currently supported languages are 'eng'"
 
         # Initialise engines
         self.det_framework = det_framework
@@ -60,7 +60,7 @@ class TextPredictor(object):
                         text_boxes.append(points)
 
         # Postprocessing (drawing bboxes and text on image)
-        print(len(text_boxes))
+        # print(len(text_boxes))
         img_with_bboxes = TextDetector.draw_boxes(img, text_boxes)
         for detection in detect_result:
             text_str = detection['text']
