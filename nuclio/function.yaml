@@ -1,0 +1,57 @@
+metadata:
+  name: onnx.digital-roads.ocr
+  namespace: cvat
+  annotations:
+    name: OCR
+    type: detector
+    framework: onnx
+    spec: |
+      [
+        { "id": 0, "name": "text_polygon", "attributes": [
+          {
+            "name": "text",
+            "input_type": "text",
+            "values": []
+          }]
+        }
+      ]
+
+spec:
+  description: Optical Character Recognition model
+  runtime: 'python:3.9'
+  handler: main_serverless:handler
+  eventTimeout: 30s
+
+  build:
+    image: cvat/onnx.digital-roads.ocr
+    baseImage: python:3.9-slim
+
+    directives:
+      postCopy:
+        - kind: ENV
+          value: DEBIAN_FRONTEND=noninteractive
+        - kind: WORKDIR
+          value: /opt/nuclio
+        - kind: RUN
+          value: sed -i 's/opencv-python/opencv-python-headless/' requirements.txt
+        - kind: RUN
+          value: pip install -U pip
+        - kind: RUN
+          value: pip install -r requirements.txt
+        - kind: RUN
+          value: cp ./nuclio/main_serverless.py ./main_serverless.py
+
+  triggers:
+    myHttpTrigger:
+      maxWorkers: 2
+      kind: 'http'
+      workerAvailabilityTimeoutMilliseconds: 10000
+      attributes:
+        maxRequestBodySize: 33554432 # 32MB
+
+  platform:
+    attributes:
+      restartPolicy:
+        name: always
+        maximumRetryCount: 3
+      mountMode: volume

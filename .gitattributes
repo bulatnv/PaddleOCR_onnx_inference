@@ -1,0 +1,6 @@
+# Basic .gitattributes for a python repo.
+*.zip filter=lfs diff=lfs merge=lfs -archive
+*.jpg filter=lfs diff=lfs merge=lfs -image
+*.png filter=lfs diff=lfs merge=lfs -image
+*.log filter=lfs diff=lfs merge=lfs -text
+*.onnx filter=lfs diff=lfs merge=lfs -model

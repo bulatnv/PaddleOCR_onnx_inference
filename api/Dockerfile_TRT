@@ -1,0 +1,24 @@
+# The "bullseye" flavor of the official docker Python image is based on Debian and includes only necessary packages.
+FROM nvcr.io/nvidia/tensorrt:22.07-py3
+ENV DEBIAN_FRONTEND noninteractive
+
+# Create the working directory
+RUN mkdir /repo
+WORKDIR /repo
+
+# Install Python dependencies
+COPY requirements.txt ./requirements.txt
+RUN sed -i 's/opencv-python/opencv-python-headless/' requirements.txt
+RUN sed -i 's/onnxruntime~=1.10.0/onnxruntime-gpu/' requirements.txt
+RUN pip install -U pip
+RUN pip install -r requirements.txt
+
+# Copy only the relevant directories and files
+COPY ocr_inference/ ./ocr_inference
+COPY api/ ./api
+
+# Run the web server
+EXPOSE 5000
+ENV PYTHONPATH ./
+ENV OV_EXEC_PROVIDER TensorrtExecutionProvider;CUDAExecutionProvider
+CMD python3 ./api/app.py
